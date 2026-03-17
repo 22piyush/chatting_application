@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
+import connectDB from './config/db.js';
 
 const app = express();
 
@@ -25,6 +26,9 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/"
 }));
+
+
+connectDB();
 
 // Test route
 app.get('/', (req, res) => {
