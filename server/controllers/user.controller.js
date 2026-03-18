@@ -129,7 +129,8 @@ export const getUser = catchAsyncError(async (req, res, next) => {
 
 export const updateProfile = catchAsyncError(async (req, res, next) => {
 
-    const { fullName, email, avatar } = req.body;
+    const { fullName, email } = req.body;
+    const avatar = req.files?.avatar;
 
     let user = await User.findById(req.user._id);
 

@@ -5,11 +5,14 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRouter from "./routes/user.routes.js"
+import { connectCloudinary } from "./config/cloudinary.js";
 
 const app = express();
 
 // Load environment variables
 dotenv.config();
+// connect cloudinary
+connectCloudinary();
 
 // Middlewares
 app.use(cors({
