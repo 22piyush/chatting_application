@@ -10,12 +10,11 @@ export const generateJWTToken = (user, message, statusCode, res) => {
         }
     );
 
-    // ✅ Cookie options
     const options = {
+        maxAge: process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: false, // true in production (HTTPS)
+        secure: process.env.NODE_ENV !== "development" ? true : false,
         sameSite: "strict",
-        maxAge: process.env.COOKIE_EXPIRE
     };
 
     return res
@@ -25,6 +24,5 @@ export const generateJWTToken = (user, message, statusCode, res) => {
             success: true,
             message,
             token,
-            user
         });
 };

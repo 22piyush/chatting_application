@@ -1,6 +1,7 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import { generateJWTToken } from "../utils/jwtToken.js";
 
 export const signup = catchAsyncError(async (req, res, next) => {
 
@@ -48,11 +49,13 @@ export const signup = catchAsyncError(async (req, res, next) => {
         }
     });
 
-    return res.status(201).json({
-        success: true,
-        message: "User registered successfully",
-        user
-    });
+    // return res.status(201).json({
+    //     success: true,
+    //     message: "User registered successfully",
+    //     user
+    // });
+
+    generateJWTToken(user, "User registered successfully", 201, res);
 
 });
 
