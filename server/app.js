@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import connectDB from './config/db.js';
+import userRouter from "./routes/user.routes.js"
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.use(fileUpload({
     tempFileDir: "/tmp/"
 }));
 
+
+app.use("/api/v1/user", userRouter)
 
 connectDB();
 
