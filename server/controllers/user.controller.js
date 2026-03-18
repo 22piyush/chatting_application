@@ -2,6 +2,7 @@ import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWTToken } from "../utils/jwtToken.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const signup = catchAsyncError(async (req, res, next) => {
 
@@ -101,14 +102,96 @@ export const signin = catchAsyncError(async (req, res, next) => {
 
 export const signout = catchAsyncError(async (req, res, next) => {
 
+    res.status(200)
+        .cookie("token", "", {
+            httpOnly: true,
+            expires: new Date(0)
+        })
+        .json({
+            success: true,
+            message: "Logged out successfully"
+        });
+
 });
 
 
 export const getUser = catchAsyncError(async (req, res, next) => {
 
+    const user = req.user;
+
+    return res.status(200).json({
+        success: true,
+        user
+    });
+
 });
 
 
 export const updateProfile = catchAsyncError(async (req, res, next) => {
+
+    const { fullName, email, avatar } = req.body;
+
+    let user = await User.findById(req.user._id);
+
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found"
+        });
+    }
+
+    if (fullName) user.fullName = fullName;
+
+    if (email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email format"
+            });
+        }
+
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "Email already in use"
+            });
+        }
+
+        user.email = email;
+    }
+
+    if (avatar) {
+
+        if (user.avatar?.public_id) {
+            await cloudinary.uploader.destroy(user.avatar.public_id);
+        }
+
+        const uploaded = await cloudinary.uploader.upload(
+            avatar.tempFilePath,
+            {
+                folder: "avatars",
+                width: 300,
+                height: 300,
+                crop: "fill"
+            }
+        );
+
+        user.avatar = {
+            public_id: uploaded.public_id,
+            url: uploaded.secure_url
+        };
+    }
+    await user.save();
+    user = await User.findById(user._id).select("-password");
+
+    return res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        user
+    });
 
 });
