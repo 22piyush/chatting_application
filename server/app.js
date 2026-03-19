@@ -6,6 +6,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import userRouter from "./routes/user.routes.js"
 import { connectCloudinary } from "./config/cloudinary.js";
+import messageRouter from "./routes/message.routes.js"
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(fileUpload({
 
 
 app.use("/api/v1/user", userRouter)
+app.use("/api/v1/message", messageRouter)
 
 connectDB();
 
