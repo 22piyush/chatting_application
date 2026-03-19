@@ -1,4 +1,9 @@
-import app from './app.js';
+import http from "http";
+import app from "./app.js";
+import { initSocket } from "./utils/socket.js";
+
+const server = http.createServer(app);
+initSocket(server);
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {
