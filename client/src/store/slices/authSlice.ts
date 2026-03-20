@@ -155,7 +155,7 @@ const authSlice = createSlice({
       })
 
       .addCase(loginUser.rejected, (state) => {
-        state.isLoggingIn = false;
+        state.isLoggingIn = true;
       })
   },
 });

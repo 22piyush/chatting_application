@@ -24,9 +24,10 @@ function Login() {
     e.preventDefault();
 
     const res = await dispatch(loginUser(formData));
-    //redirect after login
+
+    //check if login success
     if (loginUser.fulfilled.match(res)) {
-      navigate("/");
+      navigate("/"); //THIS IS REQUIRED
     }
   };
 
