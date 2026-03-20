@@ -24,8 +24,7 @@ function Login() {
     e.preventDefault();
 
     const res = await dispatch(loginUser(formData));
-
-    // ✅ redirect after login
+    //redirect after login
     if (loginUser.fulfilled.match(res)) {
       navigate("/");
     }
