@@ -48,6 +48,23 @@ export const getUser = createAsyncThunk<User | null>(
 );
 
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      await axiosInstance.get("/user/sign-out");
+
+      // ✅ disconnect socket
+      return null;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Logout failed"
+      );
+    }
+  }
+);
+
+
 // =======================
 // ✅ SLICE
 // =======================
@@ -77,10 +94,28 @@ const authSlice = createSlice({
         state.isCheckingAuth = false;
       })
 
-      // ❌ error
+      //error
       .addCase(getUser.rejected, (state) => {
         state.authUser = null;
         state.isCheckingAuth = false;
+      })
+
+
+            // =================
+      // ✅ LOGOUT
+      // =================
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoggingIn = true;
+      })
+
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.authUser = null;
+        state.onlineUsers = [];
+        state.isLoggingIn = false;
+      })
+
+      .addCase(logoutUser.rejected, (state) => {
+        state.isLoggingIn = false;
       });
   },
 });
