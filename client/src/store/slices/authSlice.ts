@@ -89,7 +89,7 @@ export const loginUser = createAsyncThunk<
 
 
 // =======================
-// ✅ SLICE
+// SLICE
 // =======================
 const authSlice = createSlice({
   name: "auth",
@@ -160,6 +160,6 @@ const authSlice = createSlice({
   },
 });
 
-// ✅ exports
+// exports
 export const { setOnlineUsers, logout } = authSlice.actions;
 export default authSlice.reducer;
