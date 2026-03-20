@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
-import { connectSocket } from "../../lib/socket";
+import { connectSocket, disconnectSocket } from "../../lib/socket";
 
 
 // ✅ User type
@@ -53,7 +54,7 @@ export const logoutUser = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       await axiosInstance.get("/user/sign-out");
-
+      disconnectSocket();
       // ✅ disconnect socket
       return null;
     } catch (error: any) {
@@ -101,8 +102,8 @@ const authSlice = createSlice({
       })
 
 
-            // =================
-      // ✅ LOGOUT
+      // =================
+      //LOGOUT
       // =================
       .addCase(logoutUser.pending, (state) => {
         state.isLoggingIn = true;
