@@ -66,6 +66,28 @@ export const logoutUser = createAsyncThunk(
 );
 
 
+export const loginUser = createAsyncThunk<
+  User, // return type
+  { email: string; password: string } // input type
+>(
+  "auth/login",
+  async (formData, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post("/user/sign-in", formData);
+
+      // ✅ connect socket after login
+      connectSocket(res.data.user._id);
+
+      return res.data.user;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Login failed"
+      );
+    }
+  }
+);
+
+
 // =======================
 // ✅ SLICE
 // =======================
@@ -117,7 +139,24 @@ const authSlice = createSlice({
 
       .addCase(logoutUser.rejected, (state) => {
         state.isLoggingIn = false;
-      });
+      })
+
+
+      // =================
+      // LOGIN
+      // =================
+      .addCase(loginUser.pending, (state) => {
+        state.isLoggingIn = true;
+      })
+
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.authUser = action.payload;
+        state.isLoggingIn = false;
+      })
+
+      .addCase(loginUser.rejected, (state) => {
+        state.isLoggingIn = false;
+      })
   },
 });
 
