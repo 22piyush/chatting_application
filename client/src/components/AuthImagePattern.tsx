@@ -1,8 +1,7 @@
-import React from "react";
 
 type Props = {
   title: string;
-  subtitle: string;
+  subtitle: string
 };
 
 function AuthImagePattern({ title, subtitle }: Props) {

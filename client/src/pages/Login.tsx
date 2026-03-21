@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { useNavigate } from "react-router-dom";
 import { loginUser, getUser } from "../store/slices/authSlice";
 import AuthImagePattern from "../components/AuthImagePattern";
 
@@ -10,9 +9,8 @@ function Login() {
     password: "",
   });
 
-  const { isLoggingIn, authUser } = useAppSelector((state) => state.auth);
+  const { isLoggingIn} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
