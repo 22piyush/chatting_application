@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { loginUser, getUser } from "../store/slices/authSlice";
 import AuthImagePattern from "../components/AuthImagePattern";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+   const navigate = useNavigate();
 
   const { isLoggingIn} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -71,6 +74,7 @@ function Login() {
           >
             {isLoggingIn ? "Logging in..." : "Login"}
           </button>
+          <p className="-mt-3 text-end cursor-pointer">Dont have an account <Link className="text-blue-600 mr-2" to={"/register"}>Register Here?</Link></p>
         </form>
       </div>
 

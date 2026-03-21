@@ -88,6 +88,25 @@ export const loginUser = createAsyncThunk<
 );
 
 
+
+export const registerUser = createAsyncThunk<
+  User, // return type
+  { fullName: string; email: string; password: string } // input type
+>(
+  "auth/sign-up",
+  async (formData, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post("/user/sign-up", formData);
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Register failed"
+      );
+    }
+  }
+);
+
+
+
 // =======================
 // SLICE
 // =======================
@@ -143,18 +162,36 @@ const authSlice = createSlice({
 
 
       // =================
-      // LOGIN
+      // Register
       // =================
       .addCase(loginUser.pending, (state) => {
         state.isLoggingIn = true;
       })
 
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.authUser = action.payload;
+        // state.authUser = action.payload;
         state.isLoggingIn = false;
       })
 
       .addCase(loginUser.rejected, (state) => {
+        state.isLoggingIn = false;
+      })
+
+
+
+            // =================
+      // LOGIN
+      // =================
+      .addCase(registerUser.pending, (state) => {
+        state.isLoggingIn = true;
+      })
+
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.authUser = action.payload;
+        state.isLoggingIn = false;
+      })
+
+      .addCase(registerUser.rejected, (state) => {
         state.isLoggingIn = false;
       })
   },
