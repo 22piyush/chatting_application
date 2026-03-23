@@ -59,7 +59,6 @@ function App() {
   return (
     <BrowserRouter>
       {authUser && <Navbar />}
-
       <Routes>
         <Route
           path="/"
