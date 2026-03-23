@@ -1,25 +1,70 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../lib/axios";
-import { connectSocket, disconnectSocket } from "../../lib/socket";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Generic User type (flexible for unknown backend data)
+interface User {
+  _id?: string;
+  name?: string;
+  email?: string;
+  [key: string]: any;
+}
 
-// Auth state type
-interface AuthState {
-  authUser: User | null;
-  isSigningIn: boolean;
-  isLoggingIn: boolean;
-  isUpdatingProfile: boolean;
-  isCheckingAuth: boolean;
-  onlineUsers: string[];
+// Message type (keep flexible for now)
+interface Message {
+  _id?: string;
+  text?: string;
+  senderId?: string;
+  receiverId?: string;
+  createdAt?: string;
+  [key: string]: any;
+}
+
+// State type
+interface ChatState {
+  users: User[];                 // array of users
+  messages: Message[];           // array of messages
+  selectedUser: User | null;     // selected user
+  isUserLoading: boolean;
+  isMessagesLoading: boolean;
 }
 
 // Initial state
-const initialState: AuthState = {
-  authUser: null,
-  isSigningIn: false,
-  isLoggingIn: false,
-  isUpdatingProfile: false,
-  isCheckingAuth: true,
-  onlineUsers: [],
+const initialState: ChatState = {
+  users: [],
+  messages: [],
+  selectedUser: null,
+  isUserLoading: false,
+  isMessagesLoading: false,
 };
+
+//Slice
+const chatSlice = createSlice({
+  name: "chat",
+  initialState,
+  reducers: {
+    setSelectedUser: (state, action: PayloadAction<User | null>) => {
+      state.selectedUser = action.payload;
+    },
+
+    pushNewMessage: (state, action: PayloadAction<Message>) => {
+      state.messages.push(action.payload);
+    },
+
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
+    },
+
+    setMessages: (state, action: PayloadAction<Message[]>) => {
+      state.messages = action.payload;
+    },
+  },
+});
+
+//Exports
+export const {
+  setSelectedUser,
+  pushNewMessage,
+  setUsers,
+  setMessages,
+} = chatSlice.actions;
+
+export default chatSlice.reducer;
